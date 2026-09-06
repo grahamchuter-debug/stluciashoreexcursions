@@ -61,11 +61,11 @@ function jsonReq(url: string, body: unknown) {
   });
 }
 
-test("LIVE_PAYMENTS_CODE_ENABLED is false for St Lucia Phase 12D (production locked)", () => {
-  assert.equal(LIVE_PAYMENTS_CODE_ENABLED, false);
+test("LIVE_PAYMENTS_CODE_ENABLED is true for St Lucia Phase 12G (live unlock)", () => {
+  assert.equal(LIVE_PAYMENTS_CODE_ENABLED, true);
 });
 
-test("live checkout blocked by code flag even with unlock phrase", () => {
+test("live checkout allowed when code flag, unlock phrase, and live secrets present", () => {
   const product = findStLuciaBookingProduct("soufriere-volcano-waterfalls-tour")!;
   const block = liveCheckoutBlock(
     {
@@ -79,8 +79,7 @@ test("live checkout blocked by code flag even with unlock phrase", () => {
     },
     product,
   );
-  assert.ok(block);
-  assert.equal(block?.code, "LIVE_PAYMENTS_BLOCKED");
+  assert.equal(block, null);
 });
 
 test("BOOKINGS_ENABLED=false kill switch", () => {

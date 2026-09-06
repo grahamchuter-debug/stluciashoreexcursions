@@ -1,6 +1,6 @@
 # Phase 12F — Production readiness / live configuration (St Lucia)
 
-Status: **COMPLETE** — production ready, **still locked**. Awaiting explicit Phase 12G live unlock.
+Status: **COMPLETE** — production ready. **Superseded by Phase 12G live unlock** (see `PHASE-12G-LIVE-UNLOCK.md`).
 
 Worker: `st-lucia-bookings-prod` · mode `live` · deployment `c53dcbae-b933-4f7e-bfe8-339602da67ae`  
 Gates: `LIVE_PAYMENTS_CODE_ENABLED=false` · `BOOKINGS_ENABLED=false` · `EMAIL_SENDING_ENABLED=false`

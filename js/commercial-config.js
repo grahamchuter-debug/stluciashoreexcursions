@@ -10,8 +10,8 @@ window.SL_COMMERCIAL = {
   bookingsApiUrl: "https://st-lucia-bookings-prod.dark-violet-8d91.workers.dev",
   email: "hello@stluciashoreexcursions.com",
   siteName: "St Lucia Shore Excursions",
-  /** Phase 12D — infrastructure built; production payments remain locked. */
-  defaultPublicBookingStatus: "PRODUCTION_READY_LOCKED",
+  /** Phase 12G — Graham-authorised live request-to-book unlock. */
+  defaultPublicBookingStatus: "BOOKING_ENABLED",
   cancellation:
     "Free cancellation up to 14 days before your excursion. Cancellations made within 14 days of departure are non-refundable. If we are unable to confirm your excursion after payment, you will receive a full refund to your original payment method.",
   paymentNotConfirmation:
@@ -37,7 +37,7 @@ window.SL_COMMERCIAL = {
       guestModel: "adult_only",
       durationLabel: "About 6 hours 30 minutes",
       maxGuests: 10,
-      publicBookingStatus: "PRODUCTION_READY_LOCKED",
+      publicBookingStatus: "BOOKING_ENABLED",
       displayPrice: "Adults $152 · Child/infant not sold online",
     },
     "st-lucia-catamaran-cruise": {
@@ -54,7 +54,7 @@ window.SL_COMMERCIAL = {
       guestModel: "ages4_plus_infant",
       durationLabel: "About 7 hours",
       maxGuests: 10,
-      publicBookingStatus: "PRODUCTION_READY_LOCKED",
+      publicBookingStatus: "BOOKING_ENABLED",
       displayPrice: "Ages 4+ $149 · Infants (0–3) $0",
     },
     "pitons-views-tour": {
@@ -71,7 +71,7 @@ window.SL_COMMERCIAL = {
       guestModel: "adult_only",
       durationLabel: "About 4 hours 30 minutes",
       maxGuests: 10,
-      publicBookingStatus: "PRODUCTION_READY_LOCKED",
+      publicBookingStatus: "BOOKING_ENABLED",
       displayPrice: "Adults $81 · Child/infant not sold online",
     },
   },

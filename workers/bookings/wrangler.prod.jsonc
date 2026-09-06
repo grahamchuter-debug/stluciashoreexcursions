@@ -17,8 +17,8 @@
   ],
   "vars": {
     "PAYMENTS_MODE": "live",
-    "BOOKINGS_ENABLED": "false",
-    "EMAIL_SENDING_ENABLED": "false",
+    "BOOKINGS_ENABLED": "true",
+    "EMAIL_SENDING_ENABLED": "true",
     "LIVE_PAYMENTS_UNLOCK": "ST_LUCIA_LIVE_UNLOCK",
     "EMAIL_FROM": "bookings@notifications.wowatour.com",
     "EMAIL_FROM_NAME": "St Lucia Shore Excursions",

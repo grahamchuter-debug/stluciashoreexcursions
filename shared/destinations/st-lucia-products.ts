@@ -71,7 +71,7 @@ const SHARED_PENDING = [
   "Fulfilment: Graham places corresponding booking via established SEG affiliate / white-label route (INTERNAL).",
   "Payment received ≠ excursion confirmed.",
   "Online max 10 guests per booking (Graham online limit — not supplier capacity).",
-  "LIVE_PAYMENTS_CODE_ENABLED remains false until Phase 12E+ Graham unlock.",
+  "LIVE_PAYMENTS_CODE_ENABLED true from Phase 12G Graham unlock (request-to-book).",
 ] as const;
 
 export const ST_LUCIA_CANCELLATION_COPY = {

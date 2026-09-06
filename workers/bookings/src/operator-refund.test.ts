@@ -406,7 +406,7 @@ test("refund J: LIVE header decline without valid operator authorisation — for
   assert.equal(booking?.status, "requested");
 });
 
-test("refund live path: tokenised LIVE review blocked while LIVE_PAYMENTS_CODE_ENABLED is false", async () => {
+test("refund live path: tokenised LIVE review allowed when LIVE_PAYMENTS_CODE_ENABLED is true", async () => {
   const db = createMemoryD1();
   const env = baseEnv(db, {
     PAYMENTS_MODE: "live",
@@ -421,19 +421,24 @@ test("refund live path: tokenised LIVE review blocked while LIVE_PAYMENTS_CODE_E
     ),
     env,
   );
-  assert.equal(page.status, 503);
+  assert.equal(page.status, 200);
   const html = await page.text();
-  assert.match(html, /not available|locked|disabled|forbidden|live/i);
+  assert.match(html, /Decline|refund|Confirm/i);
 
   const calls = installStripeMock({});
-  const action = await postDeclineAction(env, reference, token, {
-    auditReason: "Should not run while live code flag is off",
-  });
-  assert.equal(action.status, 503);
-  assert.equal(calls.length, 0);
-  const booking = await getBookingByReference(env, reference);
-  assert.equal(booking?.status, "requested");
-  assert.equal(booking?.payment_status, "paid");
+  const restoreFetch = installResendMock("success");
+  try {
+    const action = await postDeclineAction(env, reference, token, {
+      auditReason: "Phase 12G live tokenised decline path",
+    });
+    assert.equal(action.status, 200);
+    assert.equal(calls.length, 1);
+    const booking = await getBookingByReference(env, reference);
+    assert.equal(booking?.status, "supplier_declined");
+    assert.equal(booking?.payment_status, "refunded");
+  } finally {
+    restoreFetch();
+  }
 });
 
 
