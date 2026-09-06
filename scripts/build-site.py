@@ -55,10 +55,11 @@ def nav(current: str) -> str:
         return f'<li><a href="{href}"{cur}>{label}</a></li>'
 
     desktop = "\n          ".join(link(*i) for i in items)
-    mobile = "\n      ".join(
-        f'<a href="{h}"{" aria-current=\"page\"" if current == k else ""}>{lab}</a>'
-        for h, k, lab in items
-    )
+    mobile_parts = []
+    for h, k, lab in items:
+        cur = ' aria-current="page"' if current == k else ""
+        mobile_parts.append(f'<a href="{h}"{cur}>{lab}</a>')
+    mobile = "\n      ".join(mobile_parts)
     return f"""<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-nav">
   <div class="wrap site-nav__inner">
