@@ -697,7 +697,9 @@ def page_404() -> str:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page not found | {SITE}</title>
+  <meta name="description" content="The requested St Lucia Shore Excursions page was not found." />
   <meta name="robots" content="noindex" />
+  <link rel="canonical" href="{DOMAIN}/404.html" />
   <link rel="stylesheet" href="/css/site.css" />
   <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
   <link href="{FONTS}" rel="stylesheet" />

@@ -16,12 +16,12 @@
   },
   "routes": [
     {
-      "pattern": "www.stluciashoreexcursions.com/*",
-      "zone_name": "stluciashoreexcursions.com"
+      "pattern": "stluciashoreexcursions.com",
+      "custom_domain": true
     },
     {
-      "pattern": "stluciashoreexcursions.com/*",
-      "zone_name": "stluciashoreexcursions.com"
+      "pattern": "www.stluciashoreexcursions.com",
+      "custom_domain": true
     }
   ]
 }

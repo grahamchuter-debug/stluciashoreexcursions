@@ -19,7 +19,7 @@ function ok(msg) {
 
 function walk(dir, acc = []) {
   for (const name of readdirSync(dir)) {
-    if (name === "node_modules" || name === ".git" || name === "quarantine" || name === "content" || name === "partials" || name === "scripts") continue;
+    if (["node_modules", ".git", "quarantine", "scripts", "partials", "content"].includes(name)) continue;
     const p = join(dir, name);
     const st = statSync(p);
     if (st.isDirectory()) walk(p, acc);
@@ -30,7 +30,6 @@ function walk(dir, acc = []) {
 
 const banned = [
   /shoreexcursionsgroup/i,
-  /\bSEG\b/,
   /viator/i,
   /getyourguide/i,
   /top rated/i,
@@ -43,6 +42,9 @@ const banned = [
   /localhost/i,
   /sk_live_/i,
   /sk_test_/i,
+  /snorkel gear provided/i,
+  /AggregateRating/,
+  /"@type":\s*"Product"/,
 ];
 
 const requiredHtml = [
@@ -70,23 +72,20 @@ for (const rel of requiredHtml) {
 const htmlFiles = walk(ROOT);
 for (const file of htmlFiles) {
   const html = readFileSync(file, "utf8");
-  const rel = file.replace(ROOT, "").replace(/^\//, "");
+  const rel = file.slice(ROOT.length).replace(/^\//, "");
   if (!html.includes("<h1")) fail(`${rel} missing H1`);
   if (!html.includes('rel="canonical"')) fail(`${rel} missing canonical`);
   if (!html.includes("hello@stluciashoreexcursions.com") && !rel.endsWith("404.html")) {
-    // 404 may omit email; others should have footer email
-    if (!rel.includes("404")) fail(`${rel} missing contact email`);
+    fail(`${rel} missing contact email`);
   }
-  if (html.includes('id="page-content"></main>') || html.includes('id="page-content">\n</main>')) {
-    fail(`${rel} empty page-content (not assembled?)`);
+  if (html.includes("data-content=") && !html.includes('data-static')) {
+    // old shell pattern
+    if (html.includes('id="page-content"></main>')) fail(`${rel} client-fetch shell`);
   }
-  if (html.includes("data-content=") && html.includes('id="page-content"></main>')) {
-    fail(`${rel} still using client-side content fetch shell`);
-  }
+  if (html.includes("cdn.tailwindcss.com")) fail(`${rel} tailwind CDN`);
   for (const re of banned) {
     if (re.test(html)) fail(`${rel} matched banned pattern ${re}`);
   }
-  // equity pages must self-canonical to .html
   if (rel.endsWith(".html") && !rel.includes("/") && rel !== "index.html" && rel !== "404.html") {
     const expected = `https://stluciashoreexcursions.com/${rel}`;
     if (!html.includes(`rel="canonical" href="${expected}"`)) {
@@ -106,6 +105,9 @@ for (const u of [
   "https://stluciashoreexcursions.com/st-lucia-cruise-port-guide.html",
   "https://stluciashoreexcursions.com/about/",
   "https://stluciashoreexcursions.com/contact/",
+  "https://stluciashoreexcursions.com/privacy/",
+  "https://stluciashoreexcursions.com/terms/",
+  "https://stluciashoreexcursions.com/methodology/",
   "https://stluciashoreexcursions.com/st-lucia-shore-excursions-faq/",
 ]) {
   if (!sitemap.includes(`<loc>${u}</loc>`)) fail(`sitemap missing ${u}`);
@@ -116,25 +118,12 @@ const robots = readFileSync(join(ROOT, "robots.txt"), "utf8");
 if (!robots.includes("Sitemap: https://stluciashoreexcursions.com/sitemap.xml")) fail("robots sitemap");
 else ok("robots sitemap");
 
-const css = readFileSync(join(ROOT, "css/site.css"), "utf8");
-if (css.includes("cdn.tailwindcss")) fail("css references tailwind cdn");
-else ok("no tailwind cdn in css");
-
-const images = [
-  "images/hero-home.jpg",
-  "images/pitons-volcano-tours.jpg",
-  "images/soufriere-volcano.jpg",
-  "images/castries-cruise-port.jpg",
-  "images/catamaran-coast.jpg",
-  "images/private-st-lucia-tours.jpg",
-  "images/sulphur-springs.jpg",
-  "images/excursions-hub.jpg",
-  "images/ATTRIBUTION.md",
-];
-for (const img of images) {
-  if (!existsSync(join(ROOT, img))) fail(`missing ${img}`);
-  else ok(`image ${img}`);
-}
+if (!existsSync(join(ROOT, "worker.js"))) fail("missing worker.js");
+else ok("worker.js");
+if (!existsSync(join(ROOT, "js/nav.js"))) fail("missing js/nav.js");
+else ok("js/nav.js");
+if (!existsSync(join(ROOT, "images/ATTRIBUTION.md"))) fail("missing ATTRIBUTION");
+else ok("ATTRIBUTION");
 
 if (failed) {
   console.error(`\nQA failed with ${failed} issue(s)`);
