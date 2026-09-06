@@ -1,0 +1,16 @@
+{
+  "name": "stluciashoreexcursions",
+  "private": true,
+  "version": "2.0.0",
+  "description": "St Lucia Shore Excursions — Caribbean World 2.0 static site",
+  "type": "module",
+  "scripts": {
+    "build": "python3 scripts/assemble-pages.py",
+    "qa": "node scripts/qa-site.mjs",
+    "deploy": "npm run build && npm run qa && npx wrangler deploy",
+    "preview": "python3 -m http.server 8913"
+  },
+  "devDependencies": {
+    "wrangler": "^4.129.0"
+  }
+}

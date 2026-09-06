@@ -1,0 +1,17 @@
+# Keep build/source/quarantine out of Workers static assets
+content/
+partials/
+scripts/
+images/quarantine/
+node_modules/
+.git/
+.DS_Store
+.gitignore
+package.json
+package-lock.json
+README.md
+*.md
+!images/ATTRIBUTION.md
+js/main.js
+js/site.js
+js/tailwind-config.js
