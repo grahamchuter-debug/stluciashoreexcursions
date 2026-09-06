@@ -1,8 +1,8 @@
 # Phase 12D — Request-to-book (St Lucia)
 
-Status: **BUILT — D1 QUOTA + MANUAL CONFIGURATION REQUIRED** before TEST proof (12E).
+Status: **12D COMPLETE / 12E IN PROGRESS** — D1 + Workers deployed; TEST Stripe + operator secrets set; **blocked on `RESEND_API_KEY`** for sandbox email proof.
 
-## What was shipped
+## What was shipped (12D)
 
 - Shared bookings Worker source (`st-lucia-bookings-test` / `st-lucia-bookings-prod`) + D1 migrations
 - Product-config driven three tours (Soufrière / Catamaran / Pitons Views)
@@ -12,69 +12,35 @@ Status: **BUILT — D1 QUOTA + MANUAL CONFIGURATION REQUIRED** before TEST proof
 - Live kill switch: `LIVE_PAYMENTS_CODE_ENABLED = false` + prod `BOOKINGS_ENABLED=false` + `EMAIL_SENDING_ENABLED=false` + public `PRODUCTION_READY_LOCKED`
 - Automated tests: **56/56 pass**
 
-## Infrastructure status
+## Infrastructure status (12E progress)
 
 | Resource | Value |
 |----------|-------|
-| Test Worker | `st-lucia-bookings-test` — **pending deploy** (needs D1) |
-| Prod Worker | `st-lucia-bookings-prod` — **pending deploy** (needs D1; will stay LOCKED) |
-| Test D1 | `st-lucia-bookings-test` — **blocked: account at D1 free-plan limit (10/10)** |
-| Prod D1 | `st-lucia-bookings-prod` — **blocked: same** |
+| Test Worker | `https://st-lucia-bookings-test.dark-violet-8d91.workers.dev` — deployed |
+| Prod Worker | `https://st-lucia-bookings-prod.dark-violet-8d91.workers.dev` — deployed LOCKED |
+| Test D1 | `st-lucia-bookings-test` · `80060780-3b5b-4204-9ca4-703e76de640e` · migrations applied |
+| Prod D1 | `st-lucia-bookings-prod` · `46895870-4a35-456c-a873-2d187a80b363` · migrations applied |
+| Stripe TEST webhook | `we_1UCcdVBrD4jBSa7EjVzayXHw` → TEST Worker `/api/stripe/webhook` |
+| TEST secrets set | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `OPERATOR_TEST_TOKEN` |
+| TEST secret missing | `RESEND_API_KEY` (required to finish sandbox email proof) |
+| PROD secrets | none (correct) |
 | Booking refs | `W2SLE-…` |
 | Unlock phrase | `ST_LUCIA_LIVE_UNLOCK` (unused while code flag false) |
 
-Existing D1 databases on the account (do not delete without Graham OK):
-Martinique ×2, Barbados ×2, Cadiz ×2, Corfu ×2, Portofino ×1, Villefranche ×1.
+Existing D1 databases on the account remain untouched:
+Martinique ×2, Barbados ×2, Cadiz ×2, Corfu ×2, Portofino ×1, Villefranche ×1, plus new St Lucia ×2.
 
-### Graham — free 2 D1 slots OR upgrade Workers plan
-
-Then from repo root:
+## Graham — remaining for Phase 12E sandbox proof (do not paste in chat)
 
 ```bash
 cd /Users/graham.chuter/Desktop/Caribbean-World-2.0/stluciashoreexcursions
-npx wrangler d1 create st-lucia-bookings-test
-npx wrangler d1 create st-lucia-bookings-prod
-# paste the two database_id values into:
-#   workers/bookings/wrangler.jsonc
-#   workers/bookings/wrangler.prod.jsonc
-npm run bookings:migrate:test
-npm run bookings:migrate:prod
-npm run bookings:deploy:test
-npm run bookings:deploy:prod   # remains BOOKINGS_ENABLED=false / EMAIL_SENDING_ENABLED=false
+npx wrangler secret put RESEND_API_KEY --config workers/bookings/wrangler.jsonc
 ```
 
-Update `OPERATOR_PORTAL_BASE_URL` in both wrangler configs to the real `*.workers.dev` URLs after first deploy if the subdomain differs.
+Then agent (or Graham) temporarily enables TEST email for proof only:
 
-## Graham — secrets for Phase 12E TEST proof (do not paste in chat)
-
-Do **not** reuse Martinique / Barbados webhook endpoints or D1 IDs.
-
-### 1) Stripe TEST webhook + secret
-
-1. Stripe Dashboard → **TEST mode**
-2. Developers → Webhooks → Add endpoint  
-   `https://st-lucia-bookings-test.<account>.workers.dev/api/stripe/webhook`
-3. Events:
-   - `checkout.session.completed`
-   - `checkout.session.async_payment_succeeded`
-   - `checkout.session.async_payment_failed`
-   - `payment_intent.payment_failed`
-   - `charge.refunded`
-   - `refund.updated`
-4. Put secrets on TEST Worker only:
-
-```bash
-npx wrangler secret put STRIPE_SECRET_KEY --config workers/bookings/wrangler.jsonc
-# sk_test_… only
-
-npx wrangler secret put STRIPE_WEBHOOK_SECRET --config workers/bookings/wrangler.jsonc
-# whsec_… for TEST endpoint only
-
-npx wrangler secret put OPERATOR_TEST_TOKEN --config workers/bookings/wrangler.jsonc
-# long random token (TEST header ops only)
-```
-
-### 2) Resend
+- `EMAIL_SENDING_ENABLED=true` on TEST Worker vars
+- `TEST_ONLY_EMAIL_OVERRIDE` → `info@wowatour.com` (TEST mode only)
 
 From / From name / Reply-To already in Worker vars:
 
@@ -82,15 +48,7 @@ From / From name / Reply-To already in Worker vars:
 - From name: `St Lucia Shore Excursions`
 - Reply-To: `hello@stluciashoreexcursions.com`
 
-```bash
-npx wrangler secret put RESEND_API_KEY --config workers/bookings/wrangler.jsonc
-```
-
-Optional TEST proof only: `EMAIL_SENDING_ENABLED=true` + `TEST_ONLY_EMAIL_OVERRIDE` → `info@wowatour.com`, then disable after proof.
-
-### 3) LIVE secrets — only after TEST proof + Graham authorisation
-
-Do not put `sk_live_` on TEST. Prod Worker stays locked for 12D/12E until explicit unlock.
+Do **not** put live Stripe secrets on TEST. Prod stays locked until explicit unlock.
 
 ## Safety already enforced
 
@@ -105,4 +63,4 @@ Do not put `sk_live_` on TEST. Prod Worker stays locked for 12D/12E until explic
 
 ## Recommended next
 
-**PHASE 12E — TEST CONFIGURATION / PROOF** after D1 create + TEST secrets.
+**PHASE 12E — finish sandbox proof** after `RESEND_API_KEY` is set on TEST Worker.
