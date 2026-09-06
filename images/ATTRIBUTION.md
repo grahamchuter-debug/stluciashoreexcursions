@@ -72,6 +72,7 @@ Non–St Lucia / foreign template assets were moved to `images/quarantine/` and 
 - Author: DavidMPyle
 - Licence: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0)
 - Source URL: https://commons.wikimedia.org/wiki/File:The_Pitons%2C_Soufriere_district%2C_Saint_Lucia.jpg
+- Note (Phase 12G.1): Kept in library; dusk silhouette was too dark for the excursion-hub hero after CSS-only lightening. Hub hero now uses `soufriere-volcano.jpg` (same author/licence family, daytime).
 
 ## pitons-classic.jpg
 - Subject: Les Pitons.jpg

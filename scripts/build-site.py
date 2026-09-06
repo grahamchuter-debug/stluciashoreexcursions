@@ -1115,12 +1115,12 @@ def main() -> None:
             hero_page(
                 "Best St Lucia Shore Excursions",
                 "A practical comparison of the main cruise-day themes from Castries.",
-                "/images/excursions-hub.jpg",
-                "The Pitons in the Soufrière district of Saint Lucia",
+                "/images/soufriere-volcano.jpg",
+                "Soufrière town, rainforest hills and the Pitons on a bright St Lucia day",
                 "Excursion hub",
             ),
             hub_body(),
-            "/images/excursions-hub.jpg",
+            "/images/soufriere-volcano.jpg",
             [
                 crumbs(
                     [
