@@ -1,6 +1,6 @@
 # Phase 12G — Explicit live unlock (St Lucia)
 
-Status: **COMPLETE** — live request-to-book enabled. Awaiting Phase 12H controlled real-money proof.
+Status: **COMPLETE** — live request-to-book enabled. **Superseded for commercial close-out by Phase 12H** (see `PHASE-12H-LIVE-PAYMENT-PROOF.md`).
 
 Worker: `st-lucia-bookings-prod` · mode `live` · deployment `30cbb99d-2c41-4aac-b7a3-e220740d3eb3`  
 Gates: `LIVE_PAYMENTS_CODE_ENABLED=true` · `BOOKINGS_ENABLED=true` · `EMAIL_SENDING_ENABLED=true`  
@@ -48,4 +48,4 @@ Public site: `BOOKING_ENABLED` on all three products · book HTML defaults unloc
 
 ## Recommended next
 
-**PHASE 12H — ONE CONTROLLED REAL-MONEY BOOKING + FULL REFUND PROOF**
+**DONE — Phase 12H** recorded live proof `W2SLE-UZBXD9VG` ($81 Pitons Views) as **requested / paid**, **NO REFUND BY DESIGN**, **NO SEG booking**. See `PHASE-12H-LIVE-PAYMENT-PROOF.md`.
