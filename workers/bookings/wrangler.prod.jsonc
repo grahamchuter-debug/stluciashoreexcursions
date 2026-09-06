@@ -1,0 +1,32 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "st-lucia-bookings-prod",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "st-lucia-bookings-prod",
+      "database_id": "PLACEHOLDER_PROD_D1_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "PAYMENTS_MODE": "live",
+    "BOOKINGS_ENABLED": "false",
+    "EMAIL_SENDING_ENABLED": "false",
+    "LIVE_PAYMENTS_UNLOCK": "ST_LUCIA_LIVE_UNLOCK",
+    "EMAIL_FROM": "bookings@notifications.wowatour.com",
+    "EMAIL_FROM_NAME": "St Lucia Shore Excursions",
+    "EMAIL_REPLY_TO": "hello@stluciashoreexcursions.com",
+    "CORS_ALLOWED_ORIGINS": "https://stluciashoreexcursions.com,https://www.stluciashoreexcursions.com",
+    "SITE_BASE_URL": "https://stluciashoreexcursions.com",
+    "ORIGINATING_SITE": "stluciashoreexcursions.com",
+    "ORIGINATING_PORT": "Castries, St Lucia",
+    "OPERATOR_PORTAL_BASE_URL": "https://st-lucia-bookings-prod.dark-violet-8d91.workers.dev"
+  }
+}

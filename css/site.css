@@ -432,3 +432,151 @@ ul { margin: 0 0 1rem; padding-left: 1.2rem; }
 @media (prefers-reduced-motion: reduce) {
   .hero__inner, .section .wrap > :first-child, .panel:hover { animation: none; transform: none; }
 }
+
+/* Booking journey */
+.booking-flow { padding-top: 1.5rem; }
+.booking-shell { max-width: 40rem; }
+.booking-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  font-size: 0.78rem;
+  color: var(--sl-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.booking-steps .is-current { color: var(--sl-deep); font-weight: 700; }
+.booking-panel {
+  border-top: 1px solid var(--sl-line);
+  padding-top: 1.5rem;
+}
+.price-list { margin-bottom: 1rem; }
+.booking-status-banner {
+  background: var(--sl-foam);
+  border: 1px solid var(--sl-line);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin: 1rem 0 1.5rem;
+}
+.booking-status-banner p { margin: 0.45rem 0 0; color: var(--sl-muted); font-size: 0.95rem; }
+.booking-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+.booking-fieldset legend {
+  font-weight: 700;
+  color: var(--sl-deep);
+  margin-bottom: 0.75rem;
+}
+.booking-form label {
+  display: block;
+  margin-bottom: 0.95rem;
+  font-size: 0.95rem;
+}
+.booking-form input[type="text"],
+.booking-form input[type="email"],
+.booking-form input[type="tel"],
+.booking-form input[type="date"],
+.booking-form input[type="number"],
+.booking-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--sl-line);
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  background: var(--sl-white);
+}
+.booking-form textarea { min-height: 4.5rem; resize: vertical; }
+.help { font-size: 0.85rem; color: var(--sl-muted); margin: 0.35rem 0 0; }
+.muted { color: var(--sl-muted); font-weight: 500; }
+.booking-review {
+  background: var(--sl-sand);
+  border: 1px solid var(--sl-line);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+.booking-review h3 { margin: 0 0 0.75rem; font-size: 1.05rem; }
+.booking-review dl { margin: 0; }
+.booking-review dl > div {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.95rem;
+}
+.booking-review dt { width: 7.5rem; flex-shrink: 0; font-weight: 650; color: var(--sl-deep); }
+.booking-review dd { margin: 0; }
+.booking-total { border-top: 1px solid rgba(21,42,46,0.12); padding-top: 0.55rem; margin-top: 0.55rem; }
+.booking-honesty { margin-bottom: 1.25rem; font-size: 0.95rem; color: var(--sl-muted); }
+.booking-honesty h3 { margin: 0 0 0.55rem; font-size: 1.05rem; color: var(--sl-deep); }
+.consent {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  margin-bottom: 1.25rem;
+}
+.consent input { margin-top: 0.25rem; }
+.booking-error {
+  color: #7a1f1f;
+  background: #fdecec;
+  border: 1px solid #f3c4c4;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}
+.booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+.booking-ref {
+  background: var(--sl-foam);
+  border: 1px solid var(--sl-line);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  margin: 1rem 0 1.5rem;
+}
+.booking-ref__code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.15rem;
+  margin: 0.25rem 0 0;
+  color: var(--sl-deep);
+  font-weight: 700;
+}
+
+.btn--solid {
+  background: linear-gradient(135deg, var(--sl-lagoon), var(--sl-leaf));
+  color: white !important;
+  box-shadow: 0 10px 24px rgba(19, 111, 122, 0.28);
+}
+.booking-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+.booking-form legend {
+  font-weight: 700;
+  color: var(--sl-deep);
+  margin-bottom: 0.75rem;
+}
+.booking-field { display: block; margin-bottom: 0.95rem; font-size: 0.95rem; }
+.field-note { font-size: 0.85rem; color: var(--sl-muted); margin: 0.35rem 0 0; }
+.booking-review__row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.95rem;
+}
+.booking-review__row dt { width: 7.5rem; flex-shrink: 0; font-weight: 650; color: var(--sl-deep); }
+.booking-review__row dd { margin: 0; }
+.booking-review__total { border-top: 1px solid rgba(21,42,46,0.12); padding-top: 0.55rem; margin-top: 0.55rem; }

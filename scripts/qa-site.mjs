@@ -62,6 +62,12 @@ const requiredHtml = [
   "methodology/index.html",
   "st-lucia-shore-excursions-faq/index.html",
   "404.html",
+  "book/soufriere-volcano-waterfalls-tour/index.html",
+  "book/st-lucia-catamaran-cruise/index.html",
+  "book/pitons-views-tour/index.html",
+  "book/soufriere-volcano-waterfalls-tour/received/index.html",
+  "book/st-lucia-catamaran-cruise/received/index.html",
+  "book/pitons-views-tour/received/index.html",
 ];
 
 for (const rel of requiredHtml) {
@@ -124,6 +130,29 @@ if (!existsSync(join(ROOT, "js/nav.js"))) fail("missing js/nav.js");
 else ok("js/nav.js");
 if (!existsSync(join(ROOT, "images/ATTRIBUTION.md"))) fail("missing ATTRIBUTION");
 else ok("ATTRIBUTION");
+
+// Phase 12D commercial checks
+const privateHtml = readFileSync(join(ROOT, "private-st-lucia-tours.html"), "utf8");
+if (/Book now/i.test(privateHtml)) fail("private tours must remain editorial (no Book now)");
+else ok("private tours editorial only");
+
+for (const rel of [
+  "soufriere-shore-excursions.html",
+  "st-lucia-catamaran-cruises.html",
+  "pitons-volcano-tours.html",
+]) {
+  const html = readFileSync(join(ROOT, rel), "utf8");
+  const count = (html.match(/Book now/gi) || []).length;
+  if (count < 4) fail(`${rel} expected >=4 Book now CTAs, found ${count}`);
+  else ok(`${rel} Book now CTAs (${count})`);
+  if (/\bSEG\b|CASLJUNSOUVAN|CASLSAIL|CASLPITON|Shore Excursions Group/i.test(html)) {
+    fail(`${rel} leaked internal supply refs`);
+  }
+}
+
+const terms = readFileSync(join(ROOT, "terms/index.html"), "utf8");
+if (!/14 days/.test(terms)) fail("terms missing 14-day cancellation");
+else ok("terms 14-day cancellation");
 
 if (failed) {
   console.error(`\nQA failed with ${failed} issue(s)`);

@@ -16,6 +16,12 @@ const HTML_EQUITY = new Set([
   'st-lucia-cruise-port-guide',
 ]);
 
+const BOOK_PRODUCTS = new Set([
+  'soufriere-volcano-waterfalls-tour',
+  'st-lucia-catamaran-cruise',
+  'pitons-views-tour',
+]);
+
 const DIR_PAGES = new Set([
   'about',
   'contact',
@@ -71,7 +77,21 @@ export default {
       const slug = path.slice(1, -1);
       if (DIR_PAGES.has(slug)) {
         assetPath = `/${slug}/index.html`;
+      } else if (slug.startsWith('book/')) {
+        const parts = slug.split('/');
+        if (parts.length === 2 && BOOK_PRODUCTS.has(parts[1])) {
+          assetPath = `/book/${parts[1]}/index.html`;
+        } else if (parts.length === 3 && parts[2] === 'received' && BOOK_PRODUCTS.has(parts[1])) {
+          assetPath = `/book/${parts[1]}/received/index.html`;
+        }
       }
+    } else if (path.startsWith('/book/') && !path.endsWith('/')) {
+      // /book/{slug} → trailing slash
+      const dest = new URL(url.toString());
+      dest.hostname = APEX_HOST;
+      dest.protocol = 'https:';
+      dest.pathname = path.endsWith('/') ? path : `${path}/`;
+      return Response.redirect(dest.toString(), 301);
     }
 
     const assetResponse = await env.ASSETS.fetch(assetRequest(request, url, assetPath));

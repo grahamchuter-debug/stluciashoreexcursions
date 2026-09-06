@@ -2,15 +2,28 @@
   "name": "stluciashoreexcursions",
   "private": true,
   "version": "2.0.0",
-  "description": "St Lucia Shore Excursions — Caribbean World 2.0 static site",
+  "description": "St Lucia Shore Excursions — Caribbean World 2.0 static site + request-to-book Worker",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "python3 scripts/build-site.py",
     "qa": "node scripts/qa-site.mjs",
     "deploy": "npm run build && npm run qa && npx wrangler deploy",
-    "preview": "python3 -m http.server 8913"
+    "preview": "python3 -m http.server 8913",
+    "test:booking": "npx --yes tsx --test shared/world-booking/booking.test.ts shared/world-booking/date-picker.test.ts workers/bookings/src/st-lucia-security.test.ts workers/bookings/src/operator-refund.test.ts",
+    "bookings:dev": "wrangler dev --config workers/bookings/wrangler.jsonc --port 8793",
+    "bookings:migrate:test": "wrangler d1 migrations apply st-lucia-bookings-test --remote --config workers/bookings/wrangler.jsonc",
+    "bookings:migrate:prod": "wrangler d1 migrations apply st-lucia-bookings-prod --remote --config workers/bookings/wrangler.prod.jsonc",
+    "bookings:deploy:test": "wrangler deploy --config workers/bookings/wrangler.jsonc",
+    "bookings:deploy:prod": "wrangler deploy --config workers/bookings/wrangler.prod.jsonc"
+  },
+  "dependencies": {
+    "stripe": "^22.6.1"
   },
   "devDependencies": {
+    "typescript": "^5.9.3",
     "wrangler": "^4.129.0"
   }
 }
