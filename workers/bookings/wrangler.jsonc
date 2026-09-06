@@ -16,7 +16,7 @@
     {
       "binding": "DB",
       "database_name": "st-lucia-bookings-test",
-      "database_id": "PLACEHOLDER_TEST_D1_ID",
+      "database_id": "80060780-3b5b-4204-9ca4-703e76de640e",
       "migrations_dir": "migrations"
     }
   ],
