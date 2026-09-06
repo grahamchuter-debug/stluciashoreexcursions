@@ -91,9 +91,10 @@
     set("rev-ship", shipEl && shipEl.value.trim() ? shipEl.value.trim() : "—");
     set("rev-adults", adults + " × $" + adultRate);
     const infantsRow = document.getElementById("rev-infants-row");
+    const infantsCell = document.getElementById("rev-infants");
     if (guestModel === "ages4_plus_infant") {
       if (infantsRow) infantsRow.hidden = false;
-      set("rev-infants", infants + " × $0");
+      if (infantsCell) set("rev-infants", infants + " × $0");
     } else if (infantsRow) {
       infantsRow.hidden = true;
     }

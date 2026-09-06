@@ -1,80 +1,108 @@
 # Phase 12D — Request-to-book (St Lucia)
 
-Status: **BUILT — PRODUCTION LOCKED** · awaiting Phase 12E TEST configuration / proof.
+Status: **BUILT — D1 QUOTA + MANUAL CONFIGURATION REQUIRED** before TEST proof (12E).
 
 ## What was shipped
 
-- Shared bookings Worker (`st-lucia-bookings-test` / `st-lucia-bookings-prod`) + separate D1
-- Three RTB products: Soufrière Volcano & Waterfalls, Catamaran Cruise to Soufrière, Pitons Views
+- Shared bookings Worker source (`st-lucia-bookings-test` / `st-lucia-bookings-prod`) + D1 migrations
+- Product-config driven three tours (Soufrière / Catamaran / Pitons Views)
 - Site book journeys at `/book/{slug}/` + `/received/`
-- Public product pages upgraded with pricing + Book now CTAs (equity `.html` URLs preserved)
-- Terms: 14-day free cancel; within 14 days non-refundable; unable-to-confirm full refund
-- Production gates locked: `LIVE_PAYMENTS_CODE_ENABLED = false`, prod `BOOKINGS_ENABLED=false`, `EMAIL_SENDING_ENABLED=false`, public `PRODUCTION_READY_LOCKED`
+- Public product pages rewritten with pricing + Book now CTAs (URLs preserved)
+- Terms aligned with 14-day cancellation / unable-to-confirm refund
+- Live kill switch: `LIVE_PAYMENTS_CODE_ENABLED = false` + prod `BOOKINGS_ENABLED=false` + `EMAIL_SENDING_ENABLED=false` + public `PRODUCTION_READY_LOCKED`
+- Automated tests: **56/56 pass**
 
-## Infrastructure
+## Infrastructure status
 
 | Resource | Value |
 |----------|-------|
-| Test Worker | `st-lucia-bookings-test` (deploy pending D1 capacity) |
-| Prod Worker | `st-lucia-bookings-prod` (deploy pending D1 capacity · LOCKED) |
-| Test D1 | `st-lucia-bookings-test` — **not created yet** (account at D1 free-plan limit of 10) |
-| Prod D1 | `st-lucia-bookings-prod` — **not created yet** |
+| Test Worker | `st-lucia-bookings-test` — **pending deploy** (needs D1) |
+| Prod Worker | `st-lucia-bookings-prod` — **pending deploy** (needs D1; will stay LOCKED) |
+| Test D1 | `st-lucia-bookings-test` — **blocked: account at D1 free-plan limit (10/10)** |
+| Prod D1 | `st-lucia-bookings-prod` — **blocked: same** |
 | Booking refs | `W2SLE-…` |
-| Unlock phrase | `ST_LUCIA_LIVE_UNLOCK` |
+| Unlock phrase | `ST_LUCIA_LIVE_UNLOCK` (unused while code flag false) |
 
-### D1 capacity blocker (Phase 12D)
+Existing D1 databases on the account (do not delete without Graham OK):
+Martinique ×2, Barbados ×2, Cadiz ×2, Corfu ×2, Portofino ×1, Villefranche ×1.
 
-Cloudflare account currently has 10/10 D1 databases (Martinique, Barbados, Cadiz, Corfu, Portofino, Villefranche). Creating `st-lucia-bookings-test` / `st-lucia-bookings-prod` failed with the free-plan limit.
+### Graham — free 2 D1 slots OR upgrade Workers plan
 
-**Graham before 12E:** free two unused D1 slots **or** upgrade Workers, then:
+Then from repo root:
 
 ```bash
 cd /Users/graham.chuter/Desktop/Caribbean-World-2.0/stluciashoreexcursions
 npx wrangler d1 create st-lucia-bookings-test
 npx wrangler d1 create st-lucia-bookings-prod
-# paste database_id into workers/bookings/wrangler.jsonc and wrangler.prod.jsonc
+# paste the two database_id values into:
+#   workers/bookings/wrangler.jsonc
+#   workers/bookings/wrangler.prod.jsonc
 npm run bookings:migrate:test
 npm run bookings:migrate:prod
 npm run bookings:deploy:test
-npm run bookings:deploy:prod
+npm run bookings:deploy:prod   # remains BOOKINGS_ENABLED=false / EMAIL_SENDING_ENABLED=false
 ```
 
-Do **not** delete Martinique / Barbados / other live destination D1 without explicit authorisation.
+Update `OPERATOR_PORTAL_BASE_URL` in both wrangler configs to the real `*.workers.dev` URLs after first deploy if the subdomain differs.
 
 ## Graham — secrets for Phase 12E TEST proof (do not paste in chat)
 
+Do **not** reuse Martinique / Barbados webhook endpoints or D1 IDs.
+
+### 1) Stripe TEST webhook + secret
+
+1. Stripe Dashboard → **TEST mode**
+2. Developers → Webhooks → Add endpoint  
+   `https://st-lucia-bookings-test.<account>.workers.dev/api/stripe/webhook`
+3. Events:
+   - `checkout.session.completed`
+   - `checkout.session.async_payment_succeeded`
+   - `checkout.session.async_payment_failed`
+   - `payment_intent.payment_failed`
+   - `charge.refunded`
+   - `refund.updated`
+4. Put secrets on TEST Worker only:
+
 ```bash
-cd /Users/graham.chuter/Desktop/Caribbean-World-2.0/stluciashoreexcursions
-
-# Stripe TEST webhook endpoint:
-# https://st-lucia-bookings-test.<subdomain>.workers.dev/api/stripe/webhook
-# Events: checkout.session.completed, checkout.session.async_payment_succeeded,
-# checkout.session.async_payment_failed, payment_intent.payment_failed,
-# charge.refunded, refund.updated
-
 npx wrangler secret put STRIPE_SECRET_KEY --config workers/bookings/wrangler.jsonc
 # sk_test_… only
 
 npx wrangler secret put STRIPE_WEBHOOK_SECRET --config workers/bookings/wrangler.jsonc
 # whsec_… for TEST endpoint only
 
-npx wrangler secret put RESEND_API_KEY --config workers/bookings/wrangler.jsonc
-# re_… (notifications.wowatour.com)
-
 npx wrangler secret put OPERATOR_TEST_TOKEN --config workers/bookings/wrangler.jsonc
 # long random token (TEST header ops only)
 ```
 
-Email From (already in Worker vars): `St Lucia Shore Excursions <bookings@notifications.wowatour.com>`  
-Reply-To: `hello@stluciashoreexcursions.com`
+### 2) Resend
 
-**Do not** put `sk_live_` on TEST. **Do not** enable prod live payments in 12D/12E without explicit unlock.
+From / From name / Reply-To already in Worker vars:
+
+- From: `bookings@notifications.wowatour.com`
+- From name: `St Lucia Shore Excursions`
+- Reply-To: `hello@stluciashoreexcursions.com`
+
+```bash
+npx wrangler secret put RESEND_API_KEY --config workers/bookings/wrangler.jsonc
+```
+
+Optional TEST proof only: `EMAIL_SENDING_ENABLED=true` + `TEST_ONLY_EMAIL_OVERRIDE` → `info@wowatour.com`, then disable after proof.
+
+### 3) LIVE secrets — only after TEST proof + Graham authorisation
+
+Do not put `sk_live_` on TEST. Prod Worker stays locked for 12D/12E until explicit unlock.
 
 ## Safety already enforced
 
-- Payment ≠ confirmation (`requested` / `paid`)
-- Server-side pricing; Stripe Link disabled session-level (`payment_method_types: card`, `wallet_options.link.display: never`)
-- Online max 10; adult / ages-4+ lead required
-- Internal `SEG_MANUAL` / product codes never on public HTML/JS
-- Private tours editorial only (no Book now)
-- CT-2 / schedules / www DNS / other destinations untouched
+- Payment ≠ confirmation (`requested` + `paid`)
+- Server-side pricing (152 / 149+infant0 / 81)
+- Online max 10; min 1 adult / paying lead
+- Stripe Link disabled session-level (`payment_method_types: card` + `wallet_options.link.display=never`)
+- Internal `SEG_MANUAL` / codes never on public HTML/JS
+- Private Tours editorial only (no Book now)
+- CT-2 / schedules / other destinations / www DNS untouched
+- Prod gates locked
+
+## Recommended next
+
+**PHASE 12E — TEST CONFIGURATION / PROOF** after D1 create + TEST secrets.
